@@ -56,4 +56,4 @@ int ct_trie_remove(ct_trie_t* t, const char *prefix, int prefix_len, void **udat
 ```
 
 ## License
-ttlHashMap source code is available under the MIT License.
+ComponentTrie source code is available under the MIT License.
