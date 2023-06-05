@@ -981,7 +981,8 @@ static inline int ct_trie_match(ct_trie_t* t, const char *name, int name_len,
 final:
 	pthread_rwlock_unlock(&t->lock);
     if (exact == false && node == NULL) {
-        *udata = NULL;
+        if (udata != NULL)
+            *udata = NULL;
         return -1;
     }
 	if (udata != NULL)
