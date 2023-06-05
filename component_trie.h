@@ -922,7 +922,8 @@ error_out:
 	return ret;
 }
 
-static inline int ct_trie_lpm(ct_trie_t* t, const char *name, int name_len, void **udata) {
+static inline int ct_trie_match(ct_trie_t* t, const char *name, int name_len, 
+                                void **udata, bool exact) {
 	if (name_len <= t->delimiter_len * 2 
 		|| memcmp(t->delimiter, name, t->delimiter_len)) {
 		return -1;
@@ -965,9 +966,21 @@ static inline int ct_trie_lpm(ct_trie_t* t, const char *name, int name_len, void
 	}
 final:
 	pthread_rwlock_unlock(&t->lock);
+    if (exact == false && node == NULL) {
+        *udata = NULL;
+        return -1;
+    }
 	if (udata != NULL)
 		*udata = match_data;
 	return match_cn;
+}
+
+static inline int ct_trie_lpm(ct_trie_t* t, const char *name, int name_len, void **udata) {
+	return ct_trie_match(t, name, name_len, udata, false);
+}
+
+static inline int ct_trie_em(ct_trie_t* t, const char *name, int name_len, void **udata) {
+	return ct_trie_match(t, name, name_len, udata, true);
 }
 
 static inline int ct_trie_remove(ct_trie_t* t, const char *prefix, int prefix_len, void **udata) {
